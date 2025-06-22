@@ -1,0 +1,12 @@
+.map-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 99vh;  
+    width: 99vw;   
+}
+  
+#map {
+  width: 95vw;
+  height: 95vh;
+}

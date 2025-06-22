@@ -1,0 +1,50 @@
+<h1 mat-dialog-title>{{ data.trip.tripShortName }}</h1>
+
+<div mat-dialog-content>
+  <p><strong>Indulóállomás:</strong> {{ start }}</p>
+  <p><strong>Végállomás:</strong> {{ destination }}</p>
+  <p><strong>Késés:</strong> {{ data.delay }} perc</p>
+
+  <h3>Menetrend:</h3>
+  <table mat-table [dataSource]="timetableWithDates" class="mat-elevation-z2 timetable-table">
+
+    <!-- Megállóhely -->
+    <ng-container matColumnDef="place">
+      <th mat-header-cell *matHeaderCellDef> Megállóhely </th>
+      <td mat-cell *matCellDef="let stop"> {{ stop.place }} </td>
+    </ng-container>
+
+    <!-- Menetrendi -->
+    <ng-container matColumnDef="expectedTimes">
+      <th mat-header-cell *matHeaderCellDef> Menetrendi </th>
+      <td mat-cell *matCellDef="let stop">
+        <div>{{ stop.expectedArrival }}</div>
+        <div>{{ stop.expectedDeparture }}</div>
+      </td>
+    </ng-container>
+
+    <!-- Várható -->
+    <ng-container matColumnDef="realTimes">
+      <th mat-header-cell *matHeaderCellDef> Várható </th>
+      <td mat-cell *matCellDef="let stop">
+        <div [ngClass]="{ 'late-arrival': isLate(stop.expectedArrivalDate, stop.realArrivalDate) }">
+          {{ stop.realArrival }}
+        </div>
+        <div [ngClass]="{ 'late-arrival': isLate(stop.expectedDepartureDate, stop.realDepartureDate) }">
+          {{ stop.realDeparture }}
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['place', 'expectedTimes', 'realTimes']"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['place', 'expectedTimes', 'realTimes']"
+      [ngClass]="{ 'past-time': isPastExpected(row.realDepartureDate) }"
+    ></tr>
+  </table>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Bezár</button>
+</div>
