@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class TrainService {
-  private apiUrl = 'http://localhost:3000/fetch-data';
+  private apiUrl = 'https://keses-backend.onrender.com/fetch-data';
   private cacheKey = 'trainData';
   private cacheTimeKey = 'trainDataTimestamp';
   private cacheDurationMs = 20 * 1000;
