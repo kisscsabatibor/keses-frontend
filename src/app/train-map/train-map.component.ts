@@ -25,7 +25,7 @@ export class TrainMapComponent implements OnDestroy {
 
     this.refreshIntervalId = setInterval(() => {
       this.fetchAndPlotTrains();
-    }, 25000);
+    }, 20000);
   }
 
   ngOnDestroy(): void {
@@ -37,7 +37,6 @@ export class TrainMapComponent implements OnDestroy {
   private fetchAndPlotTrains(): void {
     this.trainService.fetchData().subscribe(data => {
       this.clearTrains();
-      console.log(data);
       this.plotTrains(data);
     });
   }

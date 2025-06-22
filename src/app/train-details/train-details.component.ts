@@ -14,7 +14,6 @@ export class TrainDetailsComponent {
   timetableWithDates: any[] = [];
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.timetableWithDates = this.getTimetableWithDates();
-    console.log(data);
   }
 
   get start(): string {
