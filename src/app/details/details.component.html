@@ -8,38 +8,39 @@
   <h3>Menetrend:</h3>
   <table mat-table [dataSource]="timetableWithDates" class="mat-elevation-z2 timetable-table">
 
-    <!-- Megállóhely -->
     <ng-container matColumnDef="place">
       <th mat-header-cell *matHeaderCellDef> Megállóhely </th>
       <td mat-cell *matCellDef="let stop"> {{ stop.place }} </td>
     </ng-container>
 
-    <!-- Menetrendi -->
-    <ng-container matColumnDef="expectedTimes">
-      <th mat-header-cell *matHeaderCellDef> Menetrendi </th>
+    <ng-container matColumnDef="arrival">
+      <th mat-header-cell *matHeaderCellDef> Érkezés </th>
       <td mat-cell *matCellDef="let stop">
-        <div>{{ stop.expectedArrival }}</div>
-        <div>{{ stop.expectedDeparture }}</div>
+        <div>
+          <span class="label"></span> {{ stop.expectedArrival }}
+        </div>
+        <div [ngClass]="{ 'late-arrival': isLate(stop.expectedArrivalDate, stop.realArrivalDate) }">
+          <span class="label"></span> {{ stop.realArrival }}
+        </div>
       </td>
     </ng-container>
 
-    <!-- Várható -->
-    <ng-container matColumnDef="realTimes">
-      <th mat-header-cell *matHeaderCellDef> Várható </th>
+    <ng-container matColumnDef="departure">
+      <th mat-header-cell *matHeaderCellDef> Indulás </th>
       <td mat-cell *matCellDef="let stop">
-        <div [ngClass]="{ 'late-arrival': isLate(stop.expectedArrivalDate, stop.realArrivalDate) }">
-          {{ stop.realArrival }}
+        <div>
+          <span class="label"></span> {{ stop.expectedDeparture }}
         </div>
         <div [ngClass]="{ 'late-arrival': isLate(stop.expectedDepartureDate, stop.realDepartureDate) }">
-          {{ stop.realDeparture }}
+          <span class="label"></span> {{ stop.realDeparture }}
         </div>
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['place', 'expectedTimes', 'realTimes']"></tr>
+    <tr mat-header-row *matHeaderRowDef="['place', 'arrival', 'departure']"></tr>
     <tr
       mat-row
-      *matRowDef="let row; columns: ['place', 'expectedTimes', 'realTimes']"
+      *matRowDef="let row; columns: ['place', 'arrival', 'departure']"
       [ngClass]="{ 'past-time': isPastExpected(row.realDepartureDate) }"
     ></tr>
   </table>

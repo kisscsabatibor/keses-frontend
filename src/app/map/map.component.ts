@@ -1,31 +1,32 @@
-import { Component, inject, NgZone, OnDestroy } from '@angular/core';
+import { Component, inject, Input, NgZone, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import * as polyline from '@mapbox/polyline';
-import { TrainService } from '../train.service';
-import { TrainDetailsComponent } from '../train-details/train-details.component';
+import { DataService } from '../services/data.service';
+import { DetailsComponent } from '../details/details.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-train-map',
-  templateUrl: './train-map.component.html',
-  styleUrl: './train-map.component.scss',
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrl: './map.component.scss',
 })
-export class TrainMapComponent implements OnDestroy {
+export class MapComponent implements OnDestroy {
   private map!: L.Map;
-  private trainService = inject(TrainService);
+  private dataService = inject(DataService);
   private ngZone = inject(NgZone);
   private dialog = inject(MatDialog);
   private routeLayer: L.Polyline | null = null;
   private refreshIntervalId: any;
-  private trainMarkers: L.Layer[] = [];
+  private dataMarkers: L.Layer[] = [];
+  @Input() isTrainMap = true;
 
   ngOnInit(): void {
     this.initMap();
-    this.fetchAndPlotTrains();
+    this.fetchAndPlotData();
 
     this.refreshIntervalId = setInterval(() => {
-      this.fetchAndPlotTrains();
-    }, 20000);
+      this.fetchAndPlotData();
+    }, 30000);
   }
 
   ngOnDestroy(): void {
@@ -34,16 +35,16 @@ export class TrainMapComponent implements OnDestroy {
     }
   }
 
-  private fetchAndPlotTrains(): void {
-    this.trainService.fetchData().subscribe(data => {
-      this.clearTrains();
-      this.plotTrains(data);
+  private fetchAndPlotData(): void {
+    this.dataService.fetchData(this.isTrainMap).subscribe(data => {
+      this.clearData();
+      this.plotData(data);
     });
   }
 
-  private clearTrains(): void {
-    this.trainMarkers.forEach(marker => this.map.removeLayer(marker));
-    this.trainMarkers = [];
+  private clearData(): void {
+    this.dataMarkers.forEach(marker => this.map.removeLayer(marker));
+    this.dataMarkers = [];
 
     if (this.routeLayer) {
       this.map.removeLayer(this.routeLayer);
@@ -62,18 +63,19 @@ export class TrainMapComponent implements OnDestroy {
     this.map.getPane('circlesPane')!.style.zIndex = '650';
   }
 
-  private plotTrains(trains: any[]): void {
-    trains.forEach(train => {
+  private plotData(points: any[]): void {
+    points.forEach(point => {
+      point.delay = Math.round(point.delay);
       let color = 'green';
-      if (train.delay > 5 && train.delay < 15) {
+      if (point.delay > 5 && point.delay < 15) {
         color = 'yellow';
-      } else if (train.delay >= 15 && train.delay < 60) {
+      } else if (point.delay >= 15 && point.delay < 60) {
         color = 'orange';
-      } else if (train.delay >= 60) {
+      } else if (point.delay >= 60) {
         color = 'red';
       }
 
-      const circle = L.circleMarker([train.lat, train.lon], {
+      const circle = L.circleMarker([point.lat, point.lon], {
         fillColor: color,
         fillOpacity: 1,
         radius: 8,
@@ -83,28 +85,29 @@ export class TrainMapComponent implements OnDestroy {
         pane: 'circlesPane',
       }).addTo(this.map);
 
-      this.trainMarkers.push(circle);
+      this.dataMarkers.push(circle);
 
       const popupContent = document.createElement('div');
       popupContent.innerHTML = `
-        <b>${train.trip.tripShortName}</b><br/>
-        ${train.start}<br/>
-        ${train.trip.tripHeadsign}<br/>
-        Késés: ${train.delay} perc<br/>
+        <b>${point.trip.tripShortName}</b><br/>
+        ${point.start}<br/>
+        ${point.timetable[point.timetable.length - 1]?.place || 'N/A'}<br/>
+        Késés: ${Math.round(point.delay)} perc<br/>
+        Sebesség: ${Math.round(point.speed * 3.6)} km/h<br/>
         <button id="openDialogBtn" style="margin-top:5px;">Részletek</button>
       `;
 
       popupContent.querySelector('#openDialogBtn')!.addEventListener('click', () => {
         this.ngZone.run(() => {
-          this.dialog.open(TrainDetailsComponent, {
-            data: train,
+          this.dialog.open(DetailsComponent, {
+            data: point,
           });
         });
       });
 
       circle.bindPopup(popupContent);
 
-      const latlngs = polyline.decode(train.route);
+      const latlngs = polyline.decode(point.route);
       const polylineLayer = L.polyline(latlngs, {
         color: 'red',
         weight: 4,

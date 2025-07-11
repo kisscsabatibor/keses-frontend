@@ -1,7 +1,19 @@
-<header class="header-container">
-  <h1>Vonatkövetés Classic</h1>
+<div class="app-container" [class.bus-container]="currentMode==='bus'">
+<header class="header-container"  [class.bus]="currentMode==='bus'">
+  <h1>TraBus</h1>
+  <mat-button-toggle-group
+    [(ngModel)]="currentMode"
+    name="mode"
+    aria-label="Mode toggle"
+    exclusive
+    (change)="onModeChange($event)"
+  >
+    <mat-button-toggle value="bus">Bus</mat-button-toggle>
+    <mat-button-toggle value="train">Train</mat-button-toggle>
+  </mat-button-toggle-group>
 </header>
-<app-train-map></app-train-map>
-<footer class="footer-container">
-  A Vonatkövetés Classic nem áll semmilyen kapcsolatban a MÁV Zrt.-vel. Hivatalos és teljes utastájékozatás: <a href="https://emma.mav.hu">Emma</a> és <a href="https://www.mavcsoport.hu/mavinform">MÁVINFORM</a>
+<router-outlet></router-outlet>
+<footer class="footer-container" [class.bus]="currentMode==='bus'">
+  A TraBus nem áll semmilyen kapcsolatban a MÁV Zrt.-vel. Hivatalos és teljes utastájékozatás: <a href="https://emma.mav.hu">Emma</a> és <a href="https://www.mavcsoport.hu/mavinform">MÁVINFORM</a>
 </footer>
+</div>

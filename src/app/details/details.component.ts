@@ -5,12 +5,12 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 
 @Component({
-  selector: 'app-train-details',
+  selector: 'app-details',
   imports: [MatTableModule, MatButtonModule, MatDialogModule, CommonModule],
-  templateUrl: './train-details.component.html',
-  styleUrl: './train-details.component.scss',
+  templateUrl: './details.component.html',
+  styleUrl: './details.component.scss',
 })
-export class TrainDetailsComponent {
+export class DetailsComponent {
   timetableWithDates: any[] = [];
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
     this.timetableWithDates = this.getTimetableWithDates();
@@ -41,7 +41,6 @@ export class TrainDetailsComponent {
         const [realArrH, realArrM] = entry.realArrival.split(':').map(Number);
         const [realDepH, realDepM] = entry.realDeparture.split(':').map(Number);
 
-        // Handle midnight crossover for expected
         if (expArrH < lastHour) currentDate.setDate(currentDate.getDate() + 1);
         const expectedArrivalDate = new Date(currentDate);
         expectedArrivalDate.setHours(expArrH, expArrM, 0, 0);
@@ -51,7 +50,6 @@ export class TrainDetailsComponent {
         if (expDepH < expArrH - 6) expectedDepartureDate.setDate(expectedDepartureDate.getDate() + 1);
         expectedDepartureDate.setHours(expDepH, expDepM, 0, 0);
 
-        // Handle real times similarly
         const realArrivalDate = new Date(expectedArrivalDate);
         if (realArrH < expArrH - 6) realArrivalDate.setDate(realArrivalDate.getDate() + 1);
         realArrivalDate.setHours(realArrH, realArrM, 0, 0);
