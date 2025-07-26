@@ -4,11 +4,13 @@ import * as polyline from '@mapbox/polyline';
 import { DataService } from '../services/data.service';
 import { DetailsComponent } from '../details/details.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
+  imports: [MatProgressSpinnerModule],
 })
 export class MapComponent implements OnDestroy {
   private map!: L.Map;
@@ -19,10 +21,12 @@ export class MapComponent implements OnDestroy {
   private refreshIntervalId: any;
   private dataMarkers: L.Layer[] = [];
   @Input() isTrainMap = true;
+  loading = false;
 
   ngOnInit(): void {
     this.initMap();
     this.fetchAndPlotData();
+    document.documentElement.style.setProperty('--mat-sys-primary', '#000000');
 
     this.refreshIntervalId = setInterval(() => {
       this.fetchAndPlotData();
@@ -36,9 +40,11 @@ export class MapComponent implements OnDestroy {
   }
 
   private fetchAndPlotData(): void {
+    this.loading = this.isTrainMap ? !this.dataService.trainsLoaded : !this.dataService.busesLoaded;
     this.dataService.fetchData(this.isTrainMap).subscribe(data => {
       this.clearData();
       this.plotData(data);
+      this.loading = false;
     });
   }
 
@@ -101,6 +107,7 @@ export class MapComponent implements OnDestroy {
         this.ngZone.run(() => {
           this.dialog.open(DetailsComponent, {
             data: point,
+            width: '90%',
           });
         });
       });

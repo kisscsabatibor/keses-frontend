@@ -1,12 +1,31 @@
 .map-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 83vh;  
-    width: 99vw;   
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 83vh;
+  width: 99vw;
+  position: relative;
 }
-  
+
 #map {
   width: 95vw;
   height: 83vh;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 83vh;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+circle {
+  stroke: red !important;
 }

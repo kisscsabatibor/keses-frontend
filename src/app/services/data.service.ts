@@ -14,6 +14,8 @@ export class DataService {
   private cacheBusKey = 'busData';
   private cacheBusTimeKey = 'busDataTimestamp';
   private cacheDurationMs = 30000;
+  public trainsLoaded = false;
+  public busesLoaded = false;
 
   constructor(private http: HttpClient) {}
 
@@ -32,12 +34,17 @@ export class DataService {
 
     if (cached && cachedTime && now - parseInt(cachedTime, 10) < this.cacheDurationMs) {
       return of(JSON.parse(cached));
+    } else {
+      sessionStorage.removeItem(this.cacheTrainKey);
+      sessionStorage.removeItem(this.cacheTrainTimeKey);
+      this.trainsLoaded = false;
     }
 
     return this.http.get<any>(this.apiUrlTrain).pipe(
       tap(data => {
         sessionStorage.setItem(this.cacheTrainKey, JSON.stringify(data));
         sessionStorage.setItem(this.cacheTrainTimeKey, now.toString());
+        this.trainsLoaded = true;
       })
     );
   }
@@ -49,12 +56,17 @@ export class DataService {
 
     if (cached && cachedTime && now - parseInt(cachedTime, 10) < this.cacheDurationMs) {
       return of(JSON.parse(cached));
+    } else {
+      sessionStorage.removeItem(this.cacheBusKey);
+      sessionStorage.removeItem(this.cacheBusTimeKey);
+      this.busesLoaded = false;
     }
 
     return this.http.get<any>(this.apiUrlBus).pipe(
       tap(data => {
         sessionStorage.setItem(this.cacheBusKey, JSON.stringify(data));
         sessionStorage.setItem(this.cacheBusTimeKey, now.toString());
+        this.busesLoaded = true;
       })
     );
   }
