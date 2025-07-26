@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,13 @@ export class AppComponent {
   protected currentMode: 'bus' | 'train' = 'train';
   private router = inject(Router);
   title = 'Trabus';
+
+  ngOnInit() {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+      const currentUrl = event.urlAfterRedirects;
+      this.currentMode = currentUrl.startsWith('/bus') ? 'bus' : 'train';
+    });
+  }
 
   onModeChange(event: any) {
     const selectedMode = event.value;
