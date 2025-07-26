@@ -80,4 +80,8 @@ export class DetailsComponent {
   isLate(expected: Date, actual: Date): boolean {
     return actual.getTime() > expected.getTime();
   }
+
+  isEarly(expected: Date, actual: Date, stationNum: any = -1): boolean {
+    return actual.getTime() + 120 < expected.getTime() && stationNum !== 0;
+  }
 }
