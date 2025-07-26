@@ -7,8 +7,8 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class DataService {
-  private apiUrlTrain = 'http://localhost:3000/fetch-train-data';
-  private apiUrlBus = 'http://localhost:3000/fetch-bus-data';
+  private apiUrlTrain = 'https://keses-backend.onrender.com/fetch-train-data';
+  private apiUrlBus = 'https://keses-backend.onrender.com/fetch-bus-data';
   private cacheTrainKey = 'trainData';
   private cacheTrainTimeKey = 'trainDataTimestamp';
   private cacheBusKey = 'busData';
