@@ -1,30 +1,28 @@
-.app-container{
-  background-color: #4D75A8;
+.app-container {
   a {
-    color: #1E4F8F;
+    color: #1e4f8f;
     text-decoration: underline;
   }
   a:hover {
-    color: #2E6BB4;
+    color: #2e6bb4;
   }
 
   a:visited {
-    color: #153C6B;
+    color: #153c6b;
   }
 }
 
-.bus-container{
-  background-color: #FFE066;
+.bus-container {
   a {
-    color: #B8860B;
+    color: #b8860b;
     text-decoration: underline;
   }
   a:hover {
-    color: #DAA520;
+    color: #daa520;
   }
 
   a:visited {
-    color: #8B6508;
+    color: #8b6508;
   }
 }
 
@@ -33,8 +31,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px 0;
-  background-color: #4D75A8;
+  background-color: #7f9fca;
   color: white;
+  margin-bottom: 10px;
 
   h1 {
     margin: 0;
@@ -42,7 +41,7 @@
     font-weight: 600;
     margin-left: 1em;
   }
-  mat-button-toggle-group{
+  mat-button-toggle-group {
     margin-right: 1em;
   }
 }
@@ -50,13 +49,15 @@
 .footer-container {
   text-align: center;
   padding: 15px 10px;
-  font-size: 0.9rem;
   color: white;
-  background-color: #4D75A8;
-  margin-top: 30px;
+  background-color: #7f9fca;
 }
 
 .bus {
-  background-color: #FFE066;
+  background-color: #ffe066;
   color: black;
+}
+
+.main-content {
+  flex-grow: 1;
 }
